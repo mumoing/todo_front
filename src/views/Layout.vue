@@ -24,24 +24,10 @@
             <span>工作看板</span>
           </el-menu-item>
 
-          <el-menu-item index="/tasks/todo">
-            <el-icon><List /></el-icon>
-            <span>待办事项</span>
-          </el-menu-item>
 
           <el-menu-item index="/all-tasks">
             <el-icon><Tickets /></el-icon>
             <span>全量视图</span>
-          </el-menu-item>
-
-          <el-menu-item index="/weekly">
-            <el-icon><Calendar /></el-icon>
-            <span>按周视图</span>
-          </el-menu-item>
-
-          <el-menu-item index="/archive">
-            <el-icon><FolderOpened /></el-icon>
-            <span>归档报表</span>
           </el-menu-item>
 
           <el-sub-menu index="fixed">

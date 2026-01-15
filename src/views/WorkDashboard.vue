@@ -1,109 +1,5 @@
 <template>
   <div class="work-dashboard">
-    <!-- 已完成工作区域 -->
-    <div class="completed-sections">
-      <!-- 第一周（如本周） -->
-      <div class="completed-section">
-        <div class="section-header">
-          <el-date-picker
-            v-model="week1Range"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            format="YYYYMMDD"
-            value-format="YYYY-MM-DD"
-            size="small"
-            @change="loadWeek1Tasks"
-            class="date-range-picker"
-          />
-        </div>
-        <div class="task-list completed-list">
-          <div
-            v-for="task in week1Tasks"
-            :key="task.id"
-            class="task-row completed"
-          >
-            <el-checkbox
-              :model-value="task.status === 'done'"
-              @change="(val: boolean) => toggleTaskStatus(task, val)"
-              class="task-checkbox"
-            />
-            <input
-              v-if="editingTaskId === task.id"
-              v-model="editingTitle"
-              @blur="saveTaskTitle(task)"
-              @keyup.enter="saveTaskTitle(task)"
-              @keyup.esc="cancelEdit"
-              class="task-title-input"
-              ref="titleInputRef"
-            />
-            <span
-              v-else
-              class="task-title done"
-              @click="startEditTask(task)"
-            >
-              {{ task.title }}
-            </span>
-          </div>
-          <div v-if="week1Tasks.length === 0" class="empty-hint">
-            暂无已完成任务
-          </div>
-        </div>
-      </div>
-
-      <!-- 第二周（如上周） -->
-      <div class="completed-section">
-        <div class="section-header">
-          <el-date-picker
-            v-model="week2Range"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            format="YYYYMMDD"
-            value-format="YYYY-MM-DD"
-            size="small"
-            @change="loadWeek2Tasks"
-            class="date-range-picker"
-          />
-        </div>
-        <div class="task-list completed-list">
-          <div
-            v-for="task in week2Tasks"
-            :key="task.id"
-            class="task-row completed"
-          >
-            <el-checkbox
-              :model-value="task.status === 'done'"
-              @change="(val: boolean) => toggleTaskStatus(task, val)"
-              class="task-checkbox"
-            />
-            <input
-              v-if="editingTaskId === task.id"
-              v-model="editingTitle"
-              @blur="saveTaskTitle(task)"
-              @keyup.enter="saveTaskTitle(task)"
-              @keyup.esc="cancelEdit"
-              class="task-title-input"
-              ref="titleInputRef"
-            />
-            <span
-              v-else
-              class="task-title done"
-              @click="startEditTask(task)"
-            >
-              {{ task.title }}
-            </span>
-          </div>
-          <div v-if="week2Tasks.length === 0" class="empty-hint">
-            暂无已完成任务
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 进行中区域 -->
     <div class="inprogress-section">
       <div class="section-header">
         <span class="section-title">进行中</span>
@@ -157,11 +53,11 @@
             {{ task.title }}
           </span>
           <span class="task-meta">
-            <span v-if="task.deadline" class="meta-item deadline-meta">
-              截止: {{ formatSmartDate(task.deadline) }}
-            </span>
             <span v-if="task.expected_completion_date" class="meta-item expected-meta">
               预计: {{ formatSmartDate(task.expected_completion_date) }}
+            </span>
+            <span v-if="task.deadline" class="meta-item deadline-meta">
+              截止: {{ formatSmartDate(task.deadline) }}
             </span>
           </span>
           <el-button
@@ -174,7 +70,6 @@
           />
         </div>
 
-        <!-- 添加新任务 -->
         <div class="add-task-section">
           <div class="add-task-row" @click="focusNewTask">
             <span class="add-icon">+</span>
@@ -187,7 +82,6 @@
             />
           </div>
 
-          <!-- 新任务详情输入区域 -->
           <div v-if="showNewTaskDetails" class="new-task-details">
             <div class="detail-row">
               <span class="detail-label">预计完成:</span>
@@ -223,12 +117,127 @@
         </div>
       </div>
     </div>
+
+    <div class="completed-sections">
+      <div class="completed-section">
+        <div class="section-header clickable" @click="showWeek1 = !showWeek1">
+          <div class="header-left">
+            <el-icon class="collapse-icon">
+              <ArrowDown v-if="showWeek1" />
+              <ArrowRight v-else />
+            </el-icon>
+            <el-date-picker
+              v-model="week1Range"
+              type="daterange"
+              range-separator="-"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              format="YYYYMMDD"
+              value-format="YYYY-MM-DD"
+              size="small"
+              @change="loadWeek1Tasks"
+              @click.stop
+              class="date-range-picker"
+            />
+          </div>
+        </div>
+        <div class="task-list completed-list" v-show="showWeek1">
+          <div
+            v-for="task in week1Tasks"
+            :key="task.id"
+            class="task-row completed"
+          >
+            <el-checkbox
+              :model-value="task.status === 'done'"
+              @change="(val: boolean) => toggleTaskStatus(task, val)"
+              class="task-checkbox"
+            />
+            <input
+              v-if="editingTaskId === task.id"
+              v-model="editingTitle"
+              @blur="saveTaskTitle(task)"
+              @keyup.enter="saveTaskTitle(task)"
+              @keyup.esc="cancelEdit"
+              class="task-title-input"
+              ref="titleInputRef"
+            />
+            <span
+              v-else
+              class="task-title done"
+              @click="startEditTask(task)"
+            >
+              {{ task.title }}
+            </span>
+          </div>
+          <div v-if="week1Tasks.length === 0" class="empty-hint">
+            暂无已完成任务
+          </div>
+        </div>
+      </div>
+
+      <div class="completed-section">
+        <div class="section-header clickable" @click="showWeek2 = !showWeek2">
+           <div class="header-left">
+            <el-icon class="collapse-icon">
+              <ArrowDown v-if="showWeek2" />
+              <ArrowRight v-else />
+            </el-icon>
+            <el-date-picker
+              v-model="week2Range"
+              type="daterange"
+              range-separator="-"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              format="YYYYMMDD"
+              value-format="YYYY-MM-DD"
+              size="small"
+              @change="loadWeek2Tasks"
+              @click.stop
+              class="date-range-picker"
+            />
+          </div>
+        </div>
+        <div class="task-list completed-list" v-show="showWeek2">
+          <div
+            v-for="task in week2Tasks"
+            :key="task.id"
+            class="task-row completed"
+          >
+            <el-checkbox
+              :model-value="task.status === 'done'"
+              @change="(val: boolean) => toggleTaskStatus(task, val)"
+              class="task-checkbox"
+            />
+            <input
+              v-if="editingTaskId === task.id"
+              v-model="editingTitle"
+              @blur="saveTaskTitle(task)"
+              @keyup.enter="saveTaskTitle(task)"
+              @keyup.esc="cancelEdit"
+              class="task-title-input"
+              ref="titleInputRef"
+            />
+            <span
+              v-else
+              class="task-title done"
+              @click="startEditTask(task)"
+            >
+              {{ task.title }}
+            </span>
+          </div>
+          <div v-if="week2Tasks.length === 0" class="empty-hint">
+            暂无已完成任务
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue'
-import { SortUp, SortDown, Delete } from '@element-plus/icons-vue'
+// 添加 ArrowRight, ArrowDown
+import { SortUp, SortDown, Delete, ArrowRight, ArrowDown } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import api from '../api/client'
 import dayjs from 'dayjs'
@@ -237,6 +246,10 @@ import type { Task } from '../api/types'
 // 日期范围
 const week1Range = ref<[string, string] | null>(null)
 const week2Range = ref<[string, string] | null>(null)
+
+// 2. 列表折叠状态：本周默认展开，上周默认关闭
+const showWeek1 = ref(true)
+const showWeek2 = ref(false)
 
 // 任务数据
 const week1Tasks = ref<Task[]>([])
@@ -302,16 +315,12 @@ const dateShortcuts = [
 // 初始化日期范围（本周和上周，周一到周五）
 const initDateRanges = () => {
   const now = dayjs()
-  // 本周一
   let thisWeekStart = now.startOf('week').add(1, 'day')
-  // 如果今天是周日，startOf('week') 会是本周日，需要调整
   if (now.day() === 0) {
     thisWeekStart = now.subtract(6, 'day')
   }
-  // 本周五
   const thisWeekEnd = thisWeekStart.add(4, 'day')
 
-  // 上周一到上周五
   const lastWeekStart = thisWeekStart.subtract(7, 'day')
   const lastWeekEnd = lastWeekStart.add(4, 'day')
 
@@ -319,11 +328,10 @@ const initDateRanges = () => {
   week2Range.value = [lastWeekStart.format('YYYY-MM-DD'), lastWeekEnd.format('YYYY-MM-DD')]
 }
 
-// 智能格式化日期（如果没有设置时间部分则不显示时间）
+// 智能格式化日期
 const formatSmartDate = (dateStr?: string) => {
   if (!dateStr) return ''
   const date = dayjs(dateStr)
-  // 检查是否有具体时间（不是 00:00:00）
   const hasTime = date.hour() !== 0 || date.minute() !== 0
   if (hasTime) {
     return date.format('MM-DD HH:mm')
@@ -336,7 +344,6 @@ const loadTasksByRange = async (range: [string, string] | null): Promise<Task[]>
   if (!range) return []
   try {
     const [start, end] = range
-    // 直接获取所有已完成任务，然后在前端按 completed_at 过滤
     const res: any = await api.get('/tasks/all', {
       params: {
         status: 'done'
@@ -344,7 +351,6 @@ const loadTasksByRange = async (range: [string, string] | null): Promise<Task[]>
     })
     const allDoneTasks: Task[] = res.data || []
 
-    // 在前端按 completed_at 过滤日期范围
     const startDate = dayjs(start).startOf('day')
     const endDate = dayjs(end).endOf('day')
 
@@ -360,17 +366,14 @@ const loadTasksByRange = async (range: [string, string] | null): Promise<Task[]>
   }
 }
 
-// 加载本周任务
 const loadWeek1Tasks = async () => {
   week1Tasks.value = await loadTasksByRange(week1Range.value)
 }
 
-// 加载上周任务
 const loadWeek2Tasks = async () => {
   week2Tasks.value = await loadTasksByRange(week2Range.value)
 }
 
-// 加载进行中任务
 const loadInProgressTasks = async () => {
   try {
     const res: any = await api.get('/tasks', { params: { status: 'todo' } })
@@ -380,7 +383,6 @@ const loadInProgressTasks = async () => {
   }
 }
 
-// 排序后的进行中任务
 const sortedInProgressTasks = computed(() => {
   const tasks = [...inProgressTasks.value]
   return tasks.sort((a, b) => {
@@ -391,7 +393,6 @@ const sortedInProgressTasks = computed(() => {
   })
 })
 
-// 设置排序
 const setSortBy = (field: 'deadline' | 'expected') => {
   if (sortBy.value === field) {
     sortAsc.value = !sortAsc.value
@@ -401,7 +402,6 @@ const setSortBy = (field: 'deadline' | 'expected') => {
   }
 }
 
-// 开始编辑任务
 const startEditTask = (task: Task) => {
   editingTaskId.value = task.id
   editingTitle.value = task.title
@@ -417,7 +417,6 @@ const startEditTask = (task: Task) => {
   })
 }
 
-// 保存任务标题
 const saveTaskTitle = async (task: Task) => {
   if (!editingTitle.value.trim()) {
     ElMessage.warning('标题不能为空')
@@ -449,13 +448,11 @@ const saveTaskTitle = async (task: Task) => {
   }
 }
 
-// 取消编辑
 const cancelEdit = () => {
   editingTaskId.value = null
   editingTitle.value = ''
 }
 
-// 切换任务状态
 const toggleTaskStatus = async (task: Task, completed: boolean) => {
   const newStatus = completed ? 'done' : 'todo'
   try {
@@ -467,7 +464,6 @@ const toggleTaskStatus = async (task: Task, completed: boolean) => {
       expected_completion_date: task.expected_completion_date || null,
       deadline: task.deadline || null
     })
-    // 重新加载所有列表
     await Promise.all([loadWeek1Tasks(), loadWeek2Tasks(), loadInProgressTasks()])
     ElMessage.success(completed ? '已标记为完成' : '已标记为进行中')
   } catch (error) {
@@ -475,7 +471,6 @@ const toggleTaskStatus = async (task: Task, completed: boolean) => {
   }
 }
 
-// 删除任务
 const deleteTask = async (task: Task) => {
   try {
     await ElMessageBox.confirm(
@@ -491,22 +486,18 @@ const deleteTask = async (task: Task) => {
     await loadInProgressTasks()
     ElMessage.success('已删除')
   } catch (error) {
-    // 用户取消删除
   }
 }
 
-// 聚焦新任务输入框
 const focusNewTask = () => {
   newTaskInputRef.value?.focus()
 }
 
-// 显示添加任务详情
 const showAddTaskDialog = () => {
   if (!newTaskTitle.value.trim()) return
   showNewTaskDetails.value = true
 }
 
-// 取消添加任务
 const cancelAddTask = () => {
   showNewTaskDetails.value = false
   newTaskTitle.value = ''
@@ -514,9 +505,16 @@ const cancelAddTask = () => {
   newTaskExpected.value = null
 }
 
-// 创建新任务
 const createTask = async () => {
   if (!newTaskTitle.value.trim()) return
+
+  // 4. 添加校验：预计完成时间要小于截止时间
+  if (newTaskExpected.value && newTaskDeadline.value) {
+    if (dayjs(newTaskExpected.value).isAfter(dayjs(newTaskDeadline.value))) {
+      ElMessage.warning('预计完成时间不能晚于截止时间')
+      return
+    }
+  }
 
   try {
     await api.post('/tasks', {
@@ -527,7 +525,6 @@ const createTask = async () => {
       deadline: newTaskDeadline.value || undefined,
       expected_completion_date: newTaskExpected.value || undefined
     })
-    // 重置表单
     newTaskTitle.value = ''
     newTaskDeadline.value = null
     newTaskExpected.value = null
@@ -539,7 +536,6 @@ const createTask = async () => {
   }
 }
 
-// 加载所有数据
 const loadAllData = async () => {
   initDateRanges()
   await Promise.all([loadWeek1Tasks(), loadWeek2Tasks(), loadInProgressTasks()])
@@ -559,11 +555,19 @@ onMounted(loadAllData)
   display: flex;
   flex-direction: column;
   gap: 20px;
+  /* margin-bottom: 30px; Remove bottom margin as it's now at bottom */
+}
+
+/* Add margin bottom to inprogress section since it's now on top */
+.inprogress-section {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
 }
 
-.completed-section,
-.inprogress-section {
+.completed-section {
   background: #fff;
   border-radius: 8px;
   padding: 16px;
@@ -577,6 +581,23 @@ onMounted(loadAllData)
   margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom: 1px solid #eee;
+}
+
+/* 新增样式：可点击的头部和左侧布局 */
+.section-header.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.collapse-icon {
+  font-size: 14px;
+  color: #909399;
 }
 
 .section-title {

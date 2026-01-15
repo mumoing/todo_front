@@ -2,10 +2,10 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import Setup from '../views/Setup.vue'
 import Layout from '../views/Layout.vue'
-import TaskBoard from '../views/TaskBoard.vue'
-import WeeklyView from '../views/WeeklyView.vue'
+
+
 import AllTasksView from '../views/AllTasksView.vue'
-import ArchiveView from '../views/ArchiveView.vue'
+
 import UserManagement from '../views/UserManagement.vue'
 import WorkDashboard from '../views/WorkDashboard.vue'
 
@@ -23,12 +23,11 @@ const routes = [
           return role === 'admin' ? '/admin/users' : '/tasks/todo'
         }
       },
-      // 传统路由
-      { path: 'tasks/:viewType/:id?', component: TaskBoard, props: true },
+  
       // 新增路由
-      { path: 'weekly', component: WeeklyView },
+   
       { path: 'all-tasks', component: AllTasksView },
-      { path: 'archive', component: ArchiveView },
+   
       { path: 'dashboard', component: WorkDashboard },
       { path: 'admin/users', component: UserManagement }
     ]
